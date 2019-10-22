@@ -1,0 +1,102 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Byte Trek</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'index' %}">Byte Trek</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-default" id="get_user_list" style="color: white;">User List</button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+    {% block content %} 
+        <div class="table-responsive m-t-sm">
+            <table class="table table-hover table-bordered" id="bcTable">
+               <thead>
+                   <tr>
+                    <th align="text-center">SN</th>
+                    <th align="text-center">Name</th>
+                    <th align="text-center">Gender</th>
+                    <th align="text-center">Email</th>
+                    <th align="text-center">Addres</th>
+                    <th align="text-center">Action</th>
+                   </tr>
+               </thead>
+               <tbody id="userData">
+               </tbody>
+            </table>
+        </div>
+    {% endblock %}
+
+  </div>
+    <!-- Javascripts -->
+    <script type="text/javascript" src="{% static '/plugins/jquery/jquery-2.1.4.min.js' %}"></script>
+    <script type="text/javascript" src="{% static '/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+    <script type="text/javascript" src="{% static '/plugins/pace-master/pace.min.js' %}"></script>
+    <script type="text/javascript" src="{% static '/plugins/jquery-blockui/jquery.blockui.js' %}"></script>
+    <script type="text/javascript" src="{% static '/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static '/plugins/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+    <script type="text/javascript" src="{% static '/plugins/switchery/switchery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static '/plugins/uniform/jquery.uniform.min.js' %}"></script>
+    <script type="text/javascript" src="{% static '/plugins/classie/classie.js' %}"></script>
+    <script type="text/javascript" src="{% static '/plugins/waves/waves.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/3d-bold-navigation/js/main.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/waypoints/jquery.waypoints.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/jquery-counterup/jquery.counterup.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/modern.min.js' %}"></script>
+    <script>
+        $('#get_user_list').click( function() {
+            $.ajax({
+                 url : "{% url "api_get_user_list" %}",
+                 dataType: "json",
+                 success : function (data) {
+                      console.log(data);
+                      if(data){
+                        for(var i=0;i<data.length;i++){
+                            $('#userData').append("<tr><td class='text-center' id='uid'>"+ data[i]['id'] +"</td><td class='text-center'>"+data[i]['nameTitle']+" "+data[i]['firstName'] +" "+data[i]['lastName']+"</td><td class='text-center'>"+data[i]['gender']+"</td><td class='text-center'>"+data[i]['email']+"</td><td class='text-center'>"+data[i]['house']+", "+data[i]['roadName']+", "+data[i]['city']+", "+data[i]['country']+"</td><td><button class='btn btn-sm btn-danger detailUser'>view</button></td></tr>");
+                        }
+                      }else{
+                        alert('You have no data in your database');
+                      }
+                    }
+                });
+            });
+
+        $('body').on('click', '.detailUser', function(){
+            console.log('Hello');
+            var id = $("#uid").val();
+            console.log(id);
+            $.ajax({
+                url: "{% url "api_get_user_detail" %}",
+                dataType: "json",
+                data: {'id':id},
+                success: function(data){
+                    console.log(data);
+                }
+            });
+        });
+    </script>
+  </body>
+</html>

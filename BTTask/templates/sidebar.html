@@ -4,9 +4,17 @@
         <ul class="menu text-left accordion-menu text-uppercase">
             <li class="active"><a href="{% url 'index' %}"><span class="menu-icon icon-home"></span><p>Dashboard</p></a></li>
             <li class="droplink">
-                <a href="#">
+                <a href="{% url 'getUser' %}">
                     <span class="menu-icon icon-grid"></span>
-                    <p>Get User</p>
+                    <p id="get_user">Get User</p>
+                    <span class="arrow"></span>
+                </a>
+                
+            </li>
+            <li class="droplink">
+                <a href="{% url 'userList' %}">
+                    <span class="menu-icon icon-grid"></span>
+                    <p id="get_user">User List</p>
                     <span class="arrow"></span>
                 </a>
                 
@@ -15,3 +23,20 @@
         </ul>
     </div><!-- Page Sidebar Inner -->
 </div><!-- Page Sidebar -->
+
+<script>
+// Get 100 random user //
+function addRandomUser(){
+    $(document).ready(function(){
+        console.log('Hello');
+        $.ajax({
+            url: "{% url "getUser" %}",
+            data:data,
+            success:function(data){
+                console.log(data);
+                toast.success('Succesfully added !');
+            }
+
+        });
+  });
+</script>

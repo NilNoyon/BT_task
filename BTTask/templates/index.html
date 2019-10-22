@@ -1,12 +1,86 @@
-{% extends "admin.html" %}
+{% extends "base.html" %}
+{% load static %}
 
 {% block title %}Dashboard{% endblock %}
+{% block css %}
+<link href="{% static 'plugins/datatables/css/jquery.datatables.min.css' %}" rel="stylesheet" type="text/css"/>
+<link href="{% static 'plugins/datatables/css/jquery.datatables_themeroller.css' %}" rel="stylesheet" type="text/css"/>
+<style>
+    td, td *{
+        vertical-align: middle !important;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div id="main-wrapper" class="container-fluid p-h-lg">
-    <div class="row">
-
+        <div class="row">
+            <div class="page-sidebar-inner p-h-xs">
+            <ul class="menu text-left accordion-menu text-uppercase">
+                <li class="active"><a href="{% url 'index' %}"><span class="menu-icon icon-home"></span><p>Dashboard</p></a></li>
+                <li class="droplink">
+                    <a href="{% url 'getUser' %}">
+                        <span class="menu-icon icon-grid"></span>
+                        <p id="get_user">Get User</p>
+                        <span class="arrow"></span>
+                    </a>
+                    
+                </li>
+                <li class="droplink">
+                    <button type="button" class="btn btn-primary" id="get_user_list">Get User List</button>
+                </li>
+                
+            </ul>
+        </div><!-- Page Sidebar Inner -->
+        </div><!-- Page Sidebar -->
+            <div class="col-md-12">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            User List
+                        </h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive m-t-sm">
+                            <table class="table table-hover table-bordered" id="bcTable">
+                               <thead>
+                                   <tr>
+                                    <th align="text-center">Name</th>
+                                    <th align="text-center">Gender</th>
+                                    <th align="text-center">Email</th>
+                                    <th align="text-center">Addres</th>
+                                    <th align="text-center">Action</th>
+                                   </tr>
+                               </thead>
+                               <tbody id="userData">
+                               </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+{% endblock %}
+{% block scripts %}
 
-</div>
+<script>
+$('#get_user_list').click( function() {
+    $.ajax({
+         url : "{% url "api_get_user_list" %}",
+         dataType: "json",
+         success : function (data) {
+              console.log(data);
+              if(data){
+                for(var i=0;i<data.length;i++){
+                    $('#userData').append("<tr><td class='text-center'>"+data[i]['nameTitle']+" "+data[i]['firstName'] +" "+data[i]['lastName']+"</td>"+"<td class='text-center'>"+data[i]['gender']+"</td><td class='text-center'>"+data[i]['email']+"</td><td class='text-center'>"+data[i]['house']+", "+data[i]['roadName']+", "+data[i]['city']+"", +data[i]['country']+"</td><td><button class='btn btn-sm btn-edit'>edit</button></td></tr>");
+                }
+              }else{
+                alert('You have no data in your database');
+              }
+            }
+        });
+    });
+</script>
+
 {% endblock %}
